@@ -1,63 +1,8 @@
-import { ArrowRight, Dna, ShieldCheck } from 'lucide-react';
-import { BrowserRouter, Link, Route, Routes } from 'react-router-dom';
-
-const sections = [
-  ['Research', 'Plan and synthesize genomic research with transparent evidence.'],
-  ['Sequences', 'Inspect DNA and RNA sequence material with clear provenance.'],
-  ['Nutrigenomics', 'Evaluate nutrition-linked genomic signals and cellular context.'],
-];
-
-function Landing() {
-  return (
-    <main>
-      <header className="topbar">
-        <Link className="brand" to="/"><span><Dna size={20} /></span><strong>Cyberellum Genomics</strong></Link>
-        <nav><Link to="/workspace">Workspace</Link><Link to="/auth">Sign in</Link></nav>
-      </header>
-      <section className="hero">
-        <div>
-          <p className="eyebrow">Research intelligence for modern genomics</p>
-          <h1>Explore biological complexity with governed AI.</h1>
-          <p className="lead">A focused workspace for genomic research, sequence analysis, nutrigenomics, molecular visualization, and evidence-backed collaboration.</p>
-          <Link className="button" to="/workspace">Enter research workspace <ArrowRight size={18} /></Link>
-        </div>
-        <div className="helix" aria-label="Abstract DNA visualization">
-          {Array.from({ length: 12 }).map((_, i) => <i key={i} />)}
-        </div>
-      </section>
-      <section className="features">
-        {sections.map(([title, body]) => <article key={title}><Dna /><h2>{title}</h2><p>{body}</p></article>)}
-      </section>
-    </main>
-  );
-}
-
-function Workspace() {
-  return (
-    <main>
-      <header className="topbar">
-        <Link className="brand" to="/"><span><Dna size={20} /></span><strong>Cyberellum Genomics</strong></Link>
-      </header>
-      <section className="workspace">
-        <p className="eyebrow">Genomics workspace</p>
-        <h1>Clean implementation in progress</h1>
-        <div className="notice"><ShieldCheck /><p>This surface is being rebuilt against verified Cloudflare and AWS contracts.</p></div>
-      </section>
-    </main>
-  );
-}
-
-function App() {
-  return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Landing />} />
-        <Route path="/workspace" element={<Workspace />} />
-        <Route path="/auth" element={<Workspace />} />
-        <Route path="*" element={<Workspace />} />
-      </Routes>
-    </BrowserRouter>
-  );
-}
-
-export default App;
+import{useEffect,useState}from'react';import{Activity,BrainCircuit,ChevronRight,Database,Dna,FlaskConical,Home,Library,Network,NotebookPen,ShieldCheck,Upload}from'lucide-react';import{BrowserRouter,Link,NavLink,Route,Routes}from'react-router-dom';import{apiRequest}from'./lib/api';
+type H={status:string;service:string;mfa_required:boolean;tenant_isolation:string;engine_direct_browser_access:boolean};
+const n=[['Overview','/dashboard',Home],['Research','/research',BrainCircuit],['Sequences','/sequences',Dna],['Notebook','/notebook',NotebookPen],['Library','/library',Library],['Visualizations','/visualizations',Activity],['Nutrigenomics','/nutrigenomics',FlaskConical],['Federated Network','/federated-network',Network]]as const;
+function Shell(){const[h,s]=useState<H|null>(null);useEffect(()=>{apiRequest<H>('/health').then(s).catch(()=>s(null))},[]);return <div className="shell"><aside><Link className="brand"to="/dashboard"><i><Dna/></i><b>Cyberellum<small>Genomics</small></b></Link><p>Workspace</p><nav>{n.map(([a,b,I])=><NavLink key={b}to={b}className={({isActive})=>isActive?'active':''}><I/><span>{a}</span></NavLink>)}</nav><div className="tenant"><ShieldCheck/><span>Research tenant<small>Demo environment</small></span></div></aside><section className="main"><header><div><b>Genomics workspace</b><small>Governed research and analysis</small></div><span className={h?.status==='ok'?'online':''}><i/>{h?.status==='ok'?'AWS connected':'Checking platform'}</span></header><main><Routes><Route path="/"element={<Overview h={h}/>}/><Route path="/dashboard"element={<Overview h={h}/>}/><Route path="/research"element={<Research/>}/>{n.slice(2).map(([a,b,I])=><Route key={b}path={b}element={<Empty title={a} Icon={I}/>}/>) }<Route path="*"element={<Overview h={h}/>}/></Routes></main></section></div>}
+function Overview({h}:{h:H|null}){return <div className="stack"><section className="hero"><div><em>Governed genomic intelligence</em><h1>Move from biological question to reproducible evidence.</h1><p>Research planning, sequence analysis, literature review, notebooks, visualization, and federated collaboration in one governed workspace.</p><div className="buttons"><Link className="primary"to="/research"><BrainCircuit/>Start research<ChevronRight/></Link><Link className="secondary"to="/sequences"><Upload/>Add sequence</Link></div></div><div className="visual"><div>{Array.from({length:8}).map((_,i)=><i key={i}/>)}</div><span><ShieldCheck/><b>Evidence first<small>Methods, provenance, limitations</small></b></span></div></section><section className="twocol"><article><em>Platform</em><h2>Environment status</h2><dl><div><dt>API service</dt><dd>{h?.service??'Checking...'}</dd></div><div><dt>Tenant isolation</dt><dd>{h?.tenant_isolation??'Checking...'}</dd></div><div><dt>MFA policy</dt><dd>{h?(h.mfa_required?'Required':'Not required'):'Checking...'}</dd></div><div><dt>Browser engine</dt><dd>{h?(h.engine_direct_browser_access?'Enabled':'Blocked by policy'):'Checking...'}</dd></div></dl></article><article><em>Quick start</em><h2>Build your first research flow</h2><ol><li><b>01</b><span>Define the biological question<small>Set scope and evidence requirements.</small></span></li><li><b>02</b><span>Connect verified sources<small>Add sequences, papers, or approved systems.</small></span></li><li><b>03</b><span>Run governed analysis<small>Review methods, provenance, and limitations.</small></span></li></ol></article></section><section className="cards">{n.slice(1).map(([a,b,I])=><Link key={b}to={b}><i><I/></i><span><b>{a}</b><small>Open workspace</small></span><ChevronRight/></Link>)}</section></div>}
+function Research(){return <div className="research"><em>AI-assisted research</em><h1>Frame a genomic research question.</h1><p>This surface is ready for the approved research endpoint. It does not fabricate analyses or cite unverified sources.</p><section ><label>Research question</label><textarea placeholder="Which genomic pathways are relevant to the stated phenotype, and what evidence supports each association?"/><div><small><ShieldCheck/>Evidence and provenance required</small><button disabled>Run research</button></div></section></div>}
+function Empty({title,Icon}:{title:string;Icon:typeof Dna}){return <div className="empty"><i><Icon/></i><em>Workspace ready</em><h1>{title}</h1><p>No verified data source is connected to this demo tenant.</p><button disabled>Connect source</button><small><Database/>Awaiting verified backend contract</small></div>}
+export default function App(){return <BrowserRouter><Shell/></BrowserRouter>}
